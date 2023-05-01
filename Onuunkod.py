@@ -57,8 +57,11 @@ class VoiceDetection:
         except sr.UnknownValueError:
             print("Ses anlaşılamadı.")
 
-
-    def Starter(self):
+    def stop(self):
+        global sesikapa
+        sesikapa = True
+    def start(self):
+        global sesikapa
         print("denmee")
         voicedetection = VoiceDetection(rightVoice=self.commandRight, leftVoice=self.commandLeft,
                                         holdVoice=self.commandHold, dropVoice=self.commandDrop)
@@ -80,13 +83,13 @@ class VoiceDetection:
                 print("Sol Tıklama gerçekleştirildi.")
             elif command == voicedetection.commandHold:
                 sleep(0.1)
-                pyautogui.mouseDown
-                print("Sol Tıklama gerçekleştirildi.")
+                pyautogui.mouseDown()
+                print("Tutma gerçekleştirildi.")
             elif command == voicedetection.commandDrop:
                 sleep(0.1)
-                pyautogui.mouseUp
-                print("Sol Tıklama gerçekleştirildi.")
-            elif command == "programdan çık":
+                pyautogui.mouseUp()
+                print("Bırakma gerçekleştirildi.")
+            elif command == "programdan çık" or sesikapa == True:
                 break
             else:
                 print("Geçersiz komut. Tekrar deneyiniz")

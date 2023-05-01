@@ -9,6 +9,8 @@ from pathlib import Path
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 import Onuunkod as VoicePart
+import VoiceThread as vt
+import main as mainScript
 import pyautogui
 
 gestureDropButtonName = ""
@@ -166,22 +168,30 @@ def ChangeButtonNamesVoice(buttonPosition, buttonText):
 
     if buttonPosition == 171:
         voiceRightButtonName = buttonText
-        VoicePart.VoiceDetection(rightVoice=voiceRightButtonName, leftVoice=voiceLeftButtonName,
-                                 holdVoice=voiceHoldButtonName, dropVoice=voiceDropButtonName)
+        voiceThreadInstance = vt.VoiceThread(rightVoice=voiceRightButtonName, leftVoice=voiceLeftButtonName,
+                                                 holdVoice=voiceHoldButtonName, dropVoice=voiceDropButtonName)
+        voiceThreadInstance.start()
+
     elif buttonPosition == 217:
         print("rightbutton")
         print(buttonText)
         voiceLeftButtonName = buttonText
-        VoicePart.VoiceDetection(rightVoice=voiceRightButtonName, leftVoice=voiceLeftButtonName,
-                                 holdVoice=voiceHoldButtonName, dropVoice=voiceDropButtonName)
+        voiceThreadInstance = vt.VoiceThread(rightVoice=voiceRightButtonName, leftVoice=voiceLeftButtonName,
+                                                 holdVoice=voiceHoldButtonName, dropVoice=voiceDropButtonName)
+        voiceThreadInstance.start()
+
     elif buttonPosition == 263:
         voiceHoldButtonName = buttonText
-        VoicePart.VoiceDetection(rightVoice=voiceRightButtonName, leftVoice=voiceLeftButtonName,
-                                 holdVoice=voiceHoldButtonName, dropVoice=voiceDropButtonName)
+        voiceThreadInstance = vt.VoiceThread(rightVoice=voiceRightButtonName, leftVoice=voiceLeftButtonName,
+                                                 holdVoice=voiceHoldButtonName, dropVoice=voiceDropButtonName)
+        voiceThreadInstance.start()
+
     elif buttonPosition == 309:
         voiceDropButtonName = buttonText
-        VoicePart.VoiceDetection(rightVoice=voiceRightButtonName, leftVoice=voiceLeftButtonName,
-                                 holdVoice=voiceHoldButtonName, dropVoice=voiceDropButtonName)
+        voiceThreadInstance = vt.VoiceThread(rightVoice=voiceRightButtonName, leftVoice=voiceLeftButtonName,
+                                                 holdVoice=voiceHoldButtonName, dropVoice=voiceDropButtonName)
+        voiceThreadInstance.start()
+
 
 
     button = Button(
@@ -247,7 +257,7 @@ def VoicePopUpPG():
         text=voiceRightButtonName,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: [print("button_1 clicked"), vButton_1.destroy(), VoiceChangeButton(171)],
+        command=lambda: [print("button_1 clicked"), vButton_1.destroy(), VoiceChangeButton(171), mainScript.StopMainVoiceThread()],
         relief="flat"
     )
     vButton_1.place(
@@ -263,7 +273,7 @@ def VoicePopUpPG():
         bg="#FFFFFF",
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: [vButton_2.destroy(), VoiceChangeButton(263)],
+        command=lambda: [vButton_2.destroy(), VoiceChangeButton(263), mainScript.StopMainVoiceThread()],
         relief="flat"
     )
     vButton_2.place(
@@ -279,7 +289,7 @@ def VoicePopUpPG():
         bg="#FFFFFF",
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: [vButton_3.destroy(), VoiceChangeButton(309)],
+        command=lambda: [vButton_3.destroy(), VoiceChangeButton(309), mainScript.StopMainVoiceThread()],
         relief="flat"
     )
     vButton_3.place(
@@ -295,7 +305,7 @@ def VoicePopUpPG():
         bg="#FFFFFF",
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: [vButton_4.destroy(), VoiceChangeButton(217)],
+        command=lambda: [vButton_4.destroy(), VoiceChangeButton(217), mainScript.StopMainVoiceThread()],
         relief="flat"
     )
     vButton_4.place(
