@@ -128,8 +128,8 @@ class GestureOperations:
                             if num in self.LIPS_INDEXES:
                                 coordinatesOfLipsIndexes[num] = (int(relative_x), int(relative_y))
 
-                    rightEAR, leftEAR, bothEAR = self.calculateEAR(coordinatesOfEyeIndexes)
-                    mouthAR = self.calculateMAR(coordinatesOfLipsIndexes)
+                    self.rightEAR, self.leftEAR, self.bothEAR = self.calculateEAR(coordinatesOfEyeIndexes)
+                    self.mouthAR = self.calculateMAR(coordinatesOfLipsIndexes)
 
                     # cv2.putText(frame, f"Left EAR: %.2f" % leftEAR, (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
                     #             (180, 255, 255), 2)
@@ -141,58 +141,169 @@ class GestureOperations:
                     # cv2.putText(frame, f"BothEAR: %.2f" % bothEAR, (20, 140), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
                     #             (180, 255, 255), 2)
 
-                    if bothEAR < self.bothEARThreshold:
+                    if self.bothEAR < self.bothEARThreshold:
                         self.bothEyeFrameCounter += 1
                         # cv2.putText(frame, 'Both eye Closed', (20, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
                     else:
-                        if leftEAR < self.leftEARThreshold:
+                        if self.leftEAR < self.leftEARThreshold:
                             self.leftFrameCounter += 1
                             # cv2.putText(frame, 'Left Eye Closed', (20, 200), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255),1)
 
-                        if rightEAR < self.rightEARThreshold:
+                        if self.rightEAR < self.rightEARThreshold:
                             self.rightFrameCounter += 1
                             # cv2.putText(frame, 'Right Eye Closed', (20, 230), cv2.FONT_HERSHEY_SIMPLEX, 0.6,(0, 0, 255), 1)
 
-                    if mouthAR > self.mouthARThreshold:
+                    if self.mouthAR > self.mouthARThreshold:
                         self.mouthFrameCounter += 1
                         # cv2.putText(frame, 'Mouth Open', (20, 2260), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
 
-                if self.drag_drop_gesture is Gestures.Gestures.MOUTHOPEN:
-                    if self.mouthFrameCounter > self.mouthFrameThreshold:
-                        if not self.drag_drop_just_once:
-                            pyautogui.mouseDown(button='left')
-                            self.drag_drop_just_once = True
-                        if not mouthAR > self.mouthARThreshold:
-                            pyautogui.mouseUp(button='left')
-                            self.mouthFrameCounter = 0
-                            self.drag_drop_just_once = False
+                    self.left_click()
+                    self.right_click()
+                    self.double_click()
+                    self.drag_drop()
 
-                if self.left_click_gesture is Gestures.Gestures.LEFTBLINK:
-                    if self.leftFrameCounter > self.eyeFrameThreshold:
-                        if not self.left_click_just_once:
-                            pyautogui.click(button='left')
-                            self.left_click_just_once = True
-                        if not leftEAR < self.leftEARThreshold:
-                            self.leftFrameCounter = 0
-                            self.left_click_just_once = False
+    def left_click(self):
+        if self.left_click_gesture is Gestures.Gestures.LEFTBLINK:
+            if self.leftFrameCounter > self.eyeFrameThreshold:
+                if not self.left_click_just_once:
+                    pyautogui.click(button='left')
+                    self.left_click_just_once = True
+                if not self.leftEAR < self.leftEARThreshold:
+                    self.leftFrameCounter = 0
+                    self.left_click_just_once = False
 
-                if self.right_click_gesture is Gestures.Gestures.RIGHTBLINK:
-                    if self.rightFrameCounter > self.eyeFrameThreshold:
-                        if not self.right_click_just_once:
-                            pyautogui.click(button='right')
-                            self.right_click_just_once = True
-                        if not rightEAR < self.rightEARThreshold:
-                            self.rightFrameCounter = 0
-                            self.right_click_just_once = False
+        if self.left_click_gesture is Gestures.Gestures.RIGHTBLINK:
+            if self.rightFrameCounter > self.eyeFrameThreshold:
+                if not self.left_click_just_once:
+                    pyautogui.click(button='left')
+                    self.left_click_just_once = True
+                if not self.rightEAR < self.rightEARThreshold:
+                    self.rightFrameCounter = 0
+                    self.left_click_just_once = False
 
-                if self.double_click_gesture is Gestures.Gestures.BOTHEYEBLINK:
-                    if self.bothEyeFrameCounter > self.eyeFrameThreshold:
-                        if not self.double_click_just_once:
-                            pyautogui.doubleClick(button='left')
-                            self.double_click_just_once = True
-                        if not bothEAR < self.bothEARThreshold:
-                            self.bothEyeFrameCounter = 0
-                            self.double_click_just_once = False
+        if self.left_click_gesture is Gestures.Gestures.BOTHEYEBLINK:
+            if self.bothEyeFrameCounter > self.eyeFrameThreshold:
+                if not self.left_click_just_once:
+                    pyautogui.click(button='left')
+                    self.left_click_just_once = True
+                if not self.bothEAR < self.bothEARThreshold:
+                    self.bothEyeFrameCounter = 0
+                    self.left_click_just_once = False
+
+        if self.left_click_gesture is Gestures.Gestures.MOUTHOPEN:
+            if self.mouthFrameCounter > self.mouthFrameThreshold:
+                if not self.left_click_just_once:
+                    pyautogui.click(button='left')
+                    self.left_click_just_once = True
+                if not self.mouthAR > self.mouthARThreshold:
+                    self.mouthFrameCounter = 0
+                    self.left_click_just_once = False
+
+    def right_click(self):
+        if self.right_click_gesture is Gestures.Gestures.RIGHTBLINK:
+            if self.rightFrameCounter > self.eyeFrameThreshold:
+                if not self.right_click_just_once:
+                    pyautogui.click(button='right')
+                    self.right_click_just_once = True
+                if not self.rightEAR < self.rightEARThreshold:
+                    self.rightFrameCounter = 0
+                    self.right_click_just_once = False
+
+        if self.right_click_gesture is Gestures.Gestures.LEFTBLINK:
+            if self.leftFrameCounter > self.eyeFrameThreshold:
+                if not self.right_click_just_once:
+                    pyautogui.click(button='right')
+                    self.right_click_just_once = True
+                if not self.leftEAR < self.leftEARThreshold:
+                    self.leftFrameCounter = 0
+                    self.right_click_just_once = False
+
+        if self.right_click_gesture is Gestures.Gestures.BOTHEYEBLINK:
+            if self.bothEyeFrameCounter > self.eyeFrameThreshold:
+                if not self.right_click_just_once:
+                    pyautogui.click(button='right')
+                    self.right_click_just_once = True
+                if not self.bothEAR < self.bothEARThreshold:
+                    self.bothEyeFrameCounter = 0
+                    self.right_click_just_once = False
+
+        if self.right_click_gesture is Gestures.Gestures.MOUTHOPEN:
+            if self.mouthFrameCounter > self.mouthFrameThreshold:
+                if not self.right_click_just_once:
+                    pyautogui.click(button='right')
+                    self.right_click_just_once = True
+                if not self.mouthAR > self.mouthARThreshold:
+                    self.mouthFrameCounter = 0
+                    self.right_click_just_once = False
+
+    def drag_drop(self):
+        if self.drag_drop_gesture is Gestures.Gestures.MOUTHOPEN:
+            if self.mouthFrameCounter > self.mouthFrameThreshold:
+                if not self.drag_drop_just_once:
+                    pyautogui.mouseDown(button='left')
+                    self.drag_drop_just_once = True
+                if not self.mouthAR > self.mouthARThreshold:
+                    pyautogui.mouseUp(button='left')
+                    self.mouthFrameCounter = 0
+                    self.drag_drop_just_once = False
+
+        if self.drag_drop_gesture is Gestures.Gestures.LEFTBLINK:
+            if self.leftFrameCounter > self.eyeFrameThreshold:
+                if not self.drag_drop_just_once:
+                    pyautogui.mouseDown(button='left')
+                    self.drag_drop_just_once = True
+                if not self.leftEAR < self.leftEARThreshold:
+                    pyautogui.mouseUp(button='left')
+                    self.leftFrameCounter = 0
+                    self.drag_drop_just_once = False
+
+        if self.drag_drop_gesture is Gestures.Gestures.RIGHTBLINK:
+            if self.rightFrameCounter > self.eyeFrameThreshold:
+                if not self.drag_drop_just_once:
+                    pyautogui.mouseDown(button='left')
+                    self.drag_drop_just_once = True
+                if not self.rightEAR < self.rightEARThreshold:
+                    pyautogui.mouseUp(button='left')
+                    self.rightFrameCounter = 0
+                    self.drag_drop_just_once = False
+
+    def double_click(self):
+        if self.double_click_gesture is Gestures.Gestures.BOTHEYEBLINK:
+            if self.bothEyeFrameCounter > self.eyeFrameThreshold:
+                if not self.double_click_just_once:
+                    pyautogui.doubleClick(button='left')
+                    self.double_click_just_once = True
+                if not self.bothEAR < self.bothEARThreshold:
+                    self.bothEyeFrameCounter = 0
+                    self.double_click_just_once = False
+
+        if self.double_click_gesture is Gestures.Gestures.MOUTHOPEN:
+            if self.mouthFrameCounter > self.mouthFrameThreshold:
+                if not self.double_click_just_once:
+                    pyautogui.doubleClick(button='left')
+                    self.double_click_just_once = True
+                if not self.mouthAR > self.mouthARThreshold:
+                    self.mouthFrameCounter = 0
+                    self.double_click_just_once = False
+
+        if self.double_click_gesture is Gestures.Gestures.LEFTBLINK:
+            if self.leftFrameCounter > self.eyeFrameThreshold:
+                if not self.double_click_just_once:
+                    pyautogui.doubleClick(button='left')
+                    self.double_click_just_once = True
+                if not self.leftEAR < self.leftEARThreshold:
+                    self.leftFrameCounter = 0
+                    self.double_click_just_once = False
+
+        if self.double_click_gesture is Gestures.Gestures.RIGHTBLINK:
+            if self.rightFrameCounter > self.eyeFrameThreshold:
+                if not self.double_click_just_once:
+                    pyautogui.doubleClick(button='left')
+                    self.double_click_just_once = True
+                if not self.rightEAR < self.rightEARThreshold:
+                    self.rightFrameCounter = 0
+                    self.double_click_just_once = False
+
 
     def stop(self):
         self.camera.release()

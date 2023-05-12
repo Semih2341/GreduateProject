@@ -13,16 +13,11 @@ stop_sound_thread = False
 stop_mouse_thread = False
 
 def MouseLock():
-    stop_mouse_thread !=stop_sound_thread
+    stop_mouse_thread !=stop_mouse_thread
 
-def StopMainVoiceThread():
-    global  stop_sound_thread
-    voiceThreadInstance = vt.VoiceThread(rightVoice="salam", leftVoice="domates",
-                                         holdVoice="tut", dropVoice="bırak")
-    if not stop_sound_thread:
-        voiceThreadInstance.start()
-        stop_sound_thread = True
-    voiceThreadInstance.stop()
+
+
+
 def Mouse():
     while True:
         MetaMotion = mm.Metamotion()
@@ -50,10 +45,10 @@ if __name__ == "__main__":
     # gui.MoveHeadToLeftPG()
     # gui.CloseRightEyePG()
     # gui.CloseLeftEyePG()
-    # gui.GesturePopUpPG()
-    StopMainVoiceThread()
-    voiceMenuThread = threading.Thread(target=gui.VoicePopUpPG)
-
+    # GUI = gui.GUIPages()
+    # GUI.GesturePopUpPG()
+    GUI = gui.GUIPages()
+    voiceMenuThread = threading.Thread(target=GUI.VoicePopUpPG())
     voiceMenuThread.start()
     voiceMenuThread.join()
     # mouseThread = threading.Thread(target=Mouse)

@@ -6,14 +6,15 @@ from time import sleep
 
 createListenObject = sr.Recognizer()
 
-
 # Ses kaydını başlatma ve birinci ve ikinci sesli komutları algılama
 class VoiceDetection:
-    def __init__(self, rightVoice, leftVoice, holdVoice, dropVoice):
+    def __init__(self, rightVoice, leftVoice, holdVoice, dropVoice, doubleVoice):
         self.commandRight = rightVoice
         self.commandLeft = leftVoice
         self.commandHold = holdVoice
         self.commandDrop = dropVoice
+        self.commandDouble = doubleVoice
+        self.sesikapa = False
 
     # def DetectCommandRight(self):
     #     try:
@@ -58,18 +59,19 @@ class VoiceDetection:
             print("Ses anlaşılamadı.")
 
     def stop(self):
-        global sesikapa
-        sesikapa = True
+        self.sesikapa = True
+        print("sesikapa true oldu")
     def start(self):
-        global sesikapa
-        print("denmee")
+
+        self.sesikapa = False
+        print("SES BAŞLADI")
         voicedetection = VoiceDetection(rightVoice=self.commandRight, leftVoice=self.commandLeft,
-                                        holdVoice=self.commandHold, dropVoice=self.commandDrop)
+                                        holdVoice=self.commandHold, dropVoice=self.commandDrop, doubleVoice=self.commandDouble)
         # voicedetection.DetectCommandRight()
         # voicedetection.DetectCommandLeft()
         # voicedetection.DetectHoldCommand()
         # voicedetection.DetectCommandDrop()
-        while True:
+        while not self.sesikapa:
             command = voicedetection.DetectVoice()
 
             if command == voicedetection.commandRight:
@@ -89,9 +91,14 @@ class VoiceDetection:
                 sleep(0.1)
                 pyautogui.mouseUp()
                 print("Bırakma gerçekleştirildi.")
-            elif command == "programdan çık" or sesikapa == True:
+            elif command == voicedetection.commandDouble:
+                sleep(0.1)
+                pyautogui.doubleClick()
+                print("DoubleClick gerçekleştirildi")
+            elif command == "programdan çık":
                 break
+
             else:
                 print("Geçersiz komut. Tekrar deneyiniz")
-
+        print("while çıktı")
 # if __name__ == "__main__":

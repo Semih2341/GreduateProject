@@ -4,10 +4,10 @@ import Onuunkod as vd
 
 
 class VoiceThread(threading.Thread):
-    def __init__(self, rightVoice, leftVoice, holdVoice, dropVoice):
+    def __init__(self, rightVoice, leftVoice, holdVoice, dropVoice, doubleVoice):
         threading.Thread.__init__(self)
         self.stop_event_voice = threading.Event()
-        self.voiceInstance = vd.VoiceDetection(rightVoice, leftVoice, holdVoice, dropVoice)
+        self.voiceInstance = vd.VoiceDetection(rightVoice, leftVoice, holdVoice, dropVoice, doubleVoice)
 
 
     def run(self):
