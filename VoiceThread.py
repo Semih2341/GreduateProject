@@ -23,6 +23,6 @@ class VoiceThread(threading.Thread):
 
     def stop(self):
         self.stop_event_voice.set()
-        self.voiceInstance.stop()
+        # self.voiceInstance.stop()
 
 

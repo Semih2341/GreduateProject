@@ -8,13 +8,15 @@ createListenObject = sr.Recognizer()
 
 # Ses kaydını başlatma ve birinci ve ikinci sesli komutları algılama
 class VoiceDetection:
+
+
     def __init__(self, rightVoice, leftVoice, holdVoice, dropVoice, doubleVoice):
         self.commandRight = rightVoice
         self.commandLeft = leftVoice
         self.commandHold = holdVoice
         self.commandDrop = dropVoice
         self.commandDouble = doubleVoice
-        self.sesikapa = False
+
 
     # def DetectCommandRight(self):
     #     try:
@@ -65,6 +67,7 @@ class VoiceDetection:
 
         self.sesikapa = False
         print("SES BAŞLADI")
+
         voicedetection = VoiceDetection(rightVoice=self.commandRight, leftVoice=self.commandLeft,
                                         holdVoice=self.commandHold, dropVoice=self.commandDrop, doubleVoice=self.commandDouble)
         # voicedetection.DetectCommandRight()

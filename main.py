@@ -47,10 +47,14 @@ if __name__ == "__main__":
     # gui.CloseLeftEyePG()
     # GUI = gui.GUIPages()
     # GUI.GesturePopUpPG()
+
     GUI = gui.GUIPages()
-    voiceMenuThread = threading.Thread(target=GUI.VoicePopUpPG())
-    voiceMenuThread.start()
-    voiceMenuThread.join()
+    GUI.VoiceFirstStart()
+
+    GUI.VoicePopUpPG()
+    # voiceMenuThread = threading.Thread(target=GUI.VoicePopUpPG())
+    # voiceMenuThread.start()
+    # voiceMenuThread.join()
     # mouseThread = threading.Thread(target=Mouse)
     # mouseThread.start()
     # soundThread.join()

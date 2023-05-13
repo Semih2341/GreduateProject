@@ -302,7 +302,7 @@ class GUIPages:
 
 
     def ChangeButtonNamesVoice(self, buttonPosition, buttonText):
-
+        # print("ChangeButtonNames")
         if buttonPosition == 171:
             self.voiceRightButtonName = buttonText
             self.voiceThreadInstance = vt.VoiceThread(rightVoice=self.voiceRightButtonName,
@@ -347,7 +347,7 @@ class GUIPages:
                                                       holdVoice=self.voiceHoldButtonName,
                                                       dropVoice=self.voiceDropButtonName,
                                                       doubleVoice=self.voiceDoubleClickButtonName)
-
+            self.voiceThreadInstance.start()
 
         button = Button(
             bg="#FFFFFF",
@@ -376,9 +376,13 @@ class GUIPages:
         print(command)
         self.ChangeButtonNamesVoice(ButtonPosition, command)
 
+
+    def VoiceFirstStart(self):
+        self.voiceThreadInstance.start()
+
+
     def VoicePopUpPG(self):
 
-        self.voiceThreadInstance.start()
 
         global voiceWindow, voiceCanvas, vButton_1, vButton_2, vButton_3, vButton_4, vButton_5
 
