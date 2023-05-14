@@ -7,6 +7,7 @@ from pathlib import Path
 # from tkinter import *
 # Explicit imports to satisfy Flake8
 from multiprocessing import Process
+import multiprocess
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 import Onuunkod as VoicePart
 import GestureOperations as go
@@ -16,6 +17,7 @@ import Gestures
 import GestureThread as gt
 import pyautogui
 from time import sleep
+import pickle
 
 
 class GUIPages:
@@ -36,13 +38,14 @@ class GUIPages:
                                                             doubleVoice=self.voiceDoubleClickButtonName)
         self.voice_thread = Process(target=self.voiceThreadInstance.start)
 
-        self.gestureThreadInstance = go.GestureOperations(lefClickGesture=self.gestureLeftClick,
-                                                          rightClickGesture=self.gestureRightClick,
-                                                          dragGesture=self.gestureHold,
-                                                          doubleClickGesture=self.gestureDoubleClick)
-        self.gesture_thread = Process(target=self.gestureThreadInstance.start)
+        self.gestureThreadInstance = gt.GestureThread(lefClickGesture=self.gestureLeftClick,
+                                                      rightClickGesture=self.gestureRightClick,
+                                                      dragGesture=self.gestureHold,
+                                                      doubleClickGesture=self.gestureDoubleClick)
+        # self.pickleGesture = pickle.dump(self.gestureThreadInstance.start())
+        # self.pickleLoadGesture = pickle.load(self.pickleGesture)
 
-    def Divider(self,x):
+    def Divider(self, x):
         if x == 0:
             return "Left Blink"
         elif x == 1:
@@ -51,6 +54,7 @@ class GUIPages:
             return "Both Eye Blink"
         elif x == 3:
             return "Mouth Open"
+
     def VoiceMenuCommandSectionPopUp(self):
 
         voiceCanvas.create_rectangle(
@@ -78,33 +82,64 @@ class GUIPages:
         )
         voiceWindow.mainloop()
 
-    def ChangeButtonNamesGestures(self, buttonPosition, buttonText):
-
-        while self.gesture_thread.is_alive():
-            print("kapatılıyor")
-            sleep(0.1)
+    def ButtonCheckerGesture(self, buttonPosition, buttonText):
 
         if buttonPosition == 315:
+            if buttonText == self.gestureHold:
+                self.gestureHold = self.gestureDoubleClick
+            elif buttonText == self.gestureRightClick:
+                self.gestureRightClick = self.gestureDoubleClick
+            elif buttonText == self.gestureLeftClick:
+                self.gestureLeftClick = self.gestureDoubleClick
             self.gestureDoubleClick = buttonText
+
         elif buttonPosition == 269:
+            if buttonText == self.gestureDoubleClick:
+                self.gestureDoubleClick = self.gestureHold
+            elif buttonText == self.gestureLeftClick:
+                self.gestureLeftClick = self.gestureHold
+            elif buttonText == self.gestureRightClick:
+                self.gestureRightClick = self.gestureHold
             self.gestureHold = buttonText
+
         elif buttonPosition == 223:
+            if buttonText == self.gestureDoubleClick:
+                self.gestureDoubleClick = self.gestureLeftClick
+            elif buttonText == self.gestureHold:
+                self.gestureHold = self.gestureLeftClick
+            elif buttonText == self.gestureRightClick:
+                self.gestureRightClick = self.gestureLeftClick
             self.gestureLeftClick = buttonText
+
         elif buttonPosition == 177:
+            if buttonText == self.gestureDoubleClick:
+                self.gestureDoubleClick = self.gestureRightClick
+            elif buttonText == self.gestureHold:
+                self.gestureHold = self.gestureRightClick
+            elif buttonText == self.gestureLeftClick:
+                self.gestureLeftClick = self.gestureRightClick
             self.gestureRightClick = buttonText
 
-        self.gestureThreadInstance = go.GestureOperations(lefClickGesture=self.gestureLeftClick,
-                                                          rightClickGesture=self.gestureRightClick,
-                                                          dragGesture=self.gestureHold,
-                                                          doubleClickGesture=self.gestureDoubleClick)
-        self.gesture_thread = Process(target=self.gestureThreadInstance.start)
-        self.gesture_thread.start()
+    def ChangeButtonNamesGestures(self, buttonPosition, buttonText):
+
+        if not self.gestureThreadInstance.is_alive():
+            print("kapalı")
+            sleep(0.1)
+        print(buttonText)
+
+        self.ButtonCheckerGesture(buttonPosition, buttonText)
+
+        self.gestureThreadInstance = gt.GestureThread(lefClickGesture=self.gestureLeftClick,
+                                                      rightClickGesture=self.gestureRightClick,
+                                                      dragGesture=self.gestureHold,
+                                                      doubleClickGesture=self.gestureDoubleClick)
+        self.gestureThreadInstance.start()
         button = Button(
             bg="#FFFFFF",
-            text=buttonText,
+            text=self.Divider(buttonText.value),
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: [self.gesture_thread.kill(), self.GestureCommandSectionPopUp(buttonPosition)],
+            command=lambda: [self.gestureThreadInstance.stop(), self.GestureCommandSectionPopUp(buttonPosition)],
             relief="flat"
         )
         button.place(
@@ -147,7 +182,8 @@ class GUIPages:
             text="Right Blink",
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: [self.ChangeButtonNamesGestures(ButtonPosition, Gestures.Gestures.RIGHTBLINK), button_2.destroy(),
+            command=lambda: [self.ChangeButtonNamesGestures(ButtonPosition, Gestures.Gestures.RIGHTBLINK),
+                             button_2.destroy(),
                              button_3.destroy(), button_4.destroy(), button_5.destroy(),
                              gestureCanvas.delete(backRectangle)],
             relief="flat"
@@ -164,7 +200,8 @@ class GUIPages:
             text="Both Eye Blink",
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: [self.ChangeButtonNamesGestures(ButtonPosition, Gestures.Gestures.BOTHEYEBLINK), button_2.destroy(),
+            command=lambda: [self.ChangeButtonNamesGestures(ButtonPosition, Gestures.Gestures.BOTHEYEBLINK),
+                             button_2.destroy(),
                              button_3.destroy(), button_4.destroy(), button_5.destroy(),
                              gestureCanvas.delete(backRectangle)],
             relief="flat"
@@ -181,7 +218,8 @@ class GUIPages:
             text="Mouth Open",
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: [self.ChangeButtonNamesGestures(ButtonPosition, Gestures.Gestures.MOUTHOPEN), button_2.destroy(),
+            command=lambda: [self.ChangeButtonNamesGestures(ButtonPosition, Gestures.Gestures.MOUTHOPEN),
+                             button_2.destroy(),
                              button_3.destroy(), button_4.destroy(), button_5.destroy(),
                              gestureCanvas.delete(backRectangle)],
             relief="flat"
@@ -197,8 +235,7 @@ class GUIPages:
 
     def GesturePopUpPG(self):
 
-        self.gesture_thread.start()
-
+        self.gestureThreadInstance.start()
         global gestureWindow, gestureCanvas
 
         gestureWindow = Tk()
@@ -231,7 +268,9 @@ class GUIPages:
             image=button_image_1,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: [print("button_1 clicked"), gestureWindow.destroy(), self.gesture_thread.kill(), self.VoicePopUpPG()],
+            command=lambda: [print("button_1 clicked"), gestureWindow.destroy(), self.gestureThreadInstance.stop(),
+                             self.gestureThreadInstance.join(),
+                             self.VoicePopUpPG()],
             relief="flat"
         )
         button_1.place(
@@ -243,10 +282,11 @@ class GUIPages:
 
         doubleClick = Button(
             bg="#FFFFFF",
-            text= self.Divider(self.gestureDoubleClick),
+            text=self.Divider(self.gestureDoubleClick.value),
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: self.GestureCommandSectionPopUp(315),
+            command=lambda: [self.gestureThreadInstance.stop(), self.gestureThreadInstance.join(),
+                             self.GestureCommandSectionPopUp(315)],
             relief="flat"
         )
         doubleClick.place(
@@ -258,10 +298,11 @@ class GUIPages:
 
         holdButton = Button(
             bg="#FFFFFF",
-            text=self.Divider(self.gestureHold),
+            text=self.Divider(self.gestureHold.value),
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: self.GestureCommandSectionPopUp(269),
+            command=lambda: [self.gestureThreadInstance.stop(), self.gestureThreadInstance.join(),
+                             self.GestureCommandSectionPopUp(269)],
             relief="flat"
         )
         holdButton.place(
@@ -273,10 +314,11 @@ class GUIPages:
 
         leftClickButton = Button(
             bg="#FFFFFF",
-            text=self.Divider(self.gestureLeftClick),
+            text=self.Divider(self.gestureLeftClick.value),
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: self.GestureCommandSectionPopUp(223),
+            command=lambda: [self.gestureThreadInstance.stop(), self.gestureThreadInstance.join(),
+                             self.GestureCommandSectionPopUp(223)],
             relief="flat"
         )
         leftClickButton.place(
@@ -288,10 +330,11 @@ class GUIPages:
 
         rightClickButton = Button(
             bg="#FFFFFF",
-            text=self.Divider(self.gestureRightClick),
+            text=self.Divider(self.gestureRightClick.value),
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: self.GestureCommandSectionPopUp(177),
+            command=lambda: [self.gestureThreadInstance.stop(), self.gestureThreadInstance.join(),
+                             self.GestureCommandSectionPopUp(177)],
             relief="flat"
         )
         rightClickButton.place(
@@ -307,7 +350,9 @@ class GUIPages:
             image=button_image_10,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: [print("button_10 clicked"), gestureWindow.destroy(), self.gesture_thread.kill(), self.VoicePopUpPG()],
+            command=lambda: [print("button_10 clicked"), gestureWindow.destroy(), self.gestureThreadInstance.stop(),
+                             self.gestureThreadInstance.join(),
+                             self.VoicePopUpPG()],
             relief="flat"
         )
         button_10.place(
@@ -338,43 +383,21 @@ class GUIPages:
 
         elif buttonPosition == 217:
             self.voiceLeftButtonName = buttonText
-            self.voiceThreadInstance = VoicePart.VoiceDetection(rightVoice=self.voiceRightButtonName,
-                                                                leftVoice=self.voiceLeftButtonName,
-                                                                holdVoice=self.voiceHoldButtonName,
-                                                                dropVoice=self.voiceDropButtonName,
-                                                                doubleVoice=self.voiceDoubleClickButtonName)
-            voice_thread = Process(target=self.voiceThreadInstance.start)
-            voice_thread.start()
             print("tuş değişimi")
         elif buttonPosition == 263:
             self.voiceHoldButtonName = buttonText
-            self.voiceThreadInstance = VoicePart.VoiceDetection(rightVoice=self.voiceRightButtonName,
-                                                                leftVoice=self.voiceLeftButtonName,
-                                                                holdVoice=self.voiceHoldButtonName,
-                                                                dropVoice=self.voiceDropButtonName,
-                                                                doubleVoice=self.voiceDoubleClickButtonName)
-            voice_thread = Process(target=self.voiceThreadInstance.start)
-            voice_thread.start()
-
         elif buttonPosition == 309:
             self.voiceDropButtonName = buttonText
-            self.voiceThreadInstance = VoicePart.VoiceDetection(rightVoice=self.voiceRightButtonName,
-                                                                leftVoice=self.voiceLeftButtonName,
-                                                                holdVoice=self.voiceHoldButtonName,
-                                                                dropVoice=self.voiceDropButtonName,
-                                                                doubleVoice=self.voiceDoubleClickButtonName)
-            voice_thread = Process(target=self.voiceThreadInstance.start)
-            voice_thread.start()
-
         elif buttonPosition == 355:
             self.voiceDoubleClickButtonName = buttonText
-            self.voiceThreadInstance = VoicePart.VoiceDetection(rightVoice=self.voiceRightButtonName,
-                                                                leftVoice=self.voiceLeftButtonName,
-                                                                holdVoice=self.voiceHoldButtonName,
-                                                                dropVoice=self.voiceDropButtonName,
-                                                                doubleVoice=self.voiceDoubleClickButtonName)
-            voice_thread = Process(target=self.voiceThreadInstance.start)
-            voice_thread.start()
+
+        self.voiceThreadInstance = VoicePart.VoiceDetection(rightVoice=self.voiceRightButtonName,
+                                                            leftVoice=self.voiceLeftButtonName,
+                                                            holdVoice=self.voiceHoldButtonName,
+                                                            dropVoice=self.voiceDropButtonName,
+                                                            doubleVoice=self.voiceDoubleClickButtonName)
+        voice_thread = Process(target=self.voiceThreadInstance.start)
+        voice_thread.start()
 
         button = Button(
             bg="#FFFFFF",
@@ -514,7 +537,8 @@ class GUIPages:
             image=button_image_5,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: [print("button_5 clicked"), self.voice_thread.kill(), voiceWindow.destroy(),
+            command=lambda: [print("button_5 clicked"), self.voice_thread.kill(), self.voice_thread.join(),
+                             voiceWindow.destroy(),
                              self.GesturePopUpPG()],
             relief="flat"
         )
@@ -531,7 +555,8 @@ class GUIPages:
             image=button_image_6,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: [print("button_6 clicked"), self.voice_thread.kill(), voiceWindow.destroy(),
+            command=lambda: [print("button_6 clicked"), self.voice_thread.kill(), self.voice_thread.join(),
+                             voiceWindow.destroy(),
                              self.GesturePopUpPG()],
             relief="flat"
         )

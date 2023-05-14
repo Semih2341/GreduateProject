@@ -68,33 +68,33 @@ class VoiceDetection:
         self.sesikapa = False
         print("SES BAŞLADI")
 
-        voicedetection = VoiceDetection(rightVoice=self.commandRight, leftVoice=self.commandLeft,
-                                        holdVoice=self.commandHold, dropVoice=self.commandDrop, doubleVoice=self.commandDouble)
+        # voicedetection = VoiceDetection(rightVoice=self.commandRight, leftVoice=self.commandLeft,
+        #                                 holdVoice=self.commandHold, dropVoice=self.commandDrop, doubleVoice=self.commandDouble)
         # voicedetection.DetectCommandRight()
         # voicedetection.DetectCommandLeft()
         # voicedetection.DetectHoldCommand()
         # voicedetection.DetectCommandDrop()
         while not self.sesikapa:
-            command = voicedetection.DetectVoice()
+            command = self.DetectVoice()
 
-            if command == voicedetection.commandRight:
+            if command == self.commandRight:
                 sleep(0.1)
                 pyautogui.rightClick()
                 # main.MouseLock()
                 print("Sağ Tıklama gerçekleştirildi.")
-            elif command == voicedetection.commandLeft:
+            elif command == self.commandLeft:
                 sleep(0.1)
                 pyautogui.leftClick()
                 print("Sol Tıklama gerçekleştirildi.")
-            elif command == voicedetection.commandHold:
+            elif command == self.commandHold:
                 sleep(0.1)
                 pyautogui.mouseDown()
                 print("Tutma gerçekleştirildi.")
-            elif command == voicedetection.commandDrop:
+            elif command == self.commandDrop:
                 sleep(0.1)
                 pyautogui.mouseUp()
                 print("Bırakma gerçekleştirildi.")
-            elif command == voicedetection.commandDouble:
+            elif command == self.commandDouble:
                 sleep(0.1)
                 pyautogui.doubleClick()
                 print("DoubleClick gerçekleştirildi")
