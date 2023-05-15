@@ -7,14 +7,15 @@ from pathlib import Path
 # from tkinter import *
 # Explicit imports to satisfy Flake8
 from multiprocessing import Process
-import multiprocess
+from multiprocess import process
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
-import Onuunkod as VoicePart
+import VoiceDetection as VoicePart
 import GestureOperations as go
 import main as mainScript
 import VoiceThread as vt
 import Gestures
 import GestureThread as gt
+import Metamotion as mm
 import pyautogui
 from time import sleep
 import pickle
@@ -31,11 +32,16 @@ class GUIPages:
         self.gestureHold = Gestures.Gestures.MOUTHOPEN
         self.gestureLeftClick = Gestures.Gestures.LEFTBLINK
         self.gestureRightClick = Gestures.Gestures.RIGHTBLINK
-
+        self.MetaMotion = mm.Metamotion()
+        self.MetaMotion.configure_device()
+        self.MetaMotion.start_acc_gyro()
 
 
         # self.pickleGesture = pickle.dump(self.gestureThreadInstance.start())
         # self.pickleLoadGesture = pickle.load(self.pickleGesture)
+    def MouseLockStatue(self,mmMouseLock,voiceMouseLock):
+        while True:
+            mmMouseLock = voiceMouseLock
 
     def Divider(self, x):
         if x == 0:
@@ -122,10 +128,10 @@ class GUIPages:
 
         self.ButtonCheckerGesture(buttonPosition, buttonText)
 
-        self.gestureThreadInstance = gt.GestureThread(lefClickGesture=self.gestureLeftClick,
-                                                      rightClickGesture=self.gestureRightClick,
-                                                      dragGesture=self.gestureHold,
-                                                      doubleClickGesture=self.gestureDoubleClick)
+        # self.gestureThreadInstance = gt.GestureThread(lefClickGesture=self.gestureLeftClick,
+        #                                               rightClickGesture=self.gestureRightClick,
+        #                                               dragGesture=self.gestureHold,
+        #                                               doubleClickGesture=self.gestureDoubleClick)
 
         button = Button(
             bg="#FFFFFF",
@@ -425,28 +431,28 @@ class GUIPages:
         self.voice_thread.close()
 
         self.ButtonCheckerVoice(buttonPosition, buttonText)
-
-        self.voiceThreadInstance = VoicePart.VoiceDetection(rightVoice=self.voiceRightButtonName,
-                                                            leftVoice=self.voiceLeftButtonName,
-                                                            holdVoice=self.voiceHoldButtonName,
-                                                            dropVoice=self.voiceDropButtonName,
-                                                            doubleVoice=self.voiceDoubleClickButtonName)
-        self.voice_thread = Process(target=self.voiceThreadInstance.start)
-
-        button = Button(
-            bg="#FFFFFF",
-            text=buttonText,
-            borderwidth=0,
-            highlightthickness=0,
-            command=lambda: [button.destroy(), self.voice_thread.kill(), self.voice_thread.join(), self.VoiceChangeButton(buttonPosition)],
-            relief="flat"
-        )
-        button.place(
-            x=755,
-            y=buttonPosition,
-            width=98,
-            height=28
-        )
+        #
+        # self.voiceThreadInstance = VoicePart.VoiceDetection(rightVoice=self.voiceRightButtonName,
+        #                                                     leftVoice=self.voiceLeftButtonName,
+        #                                                     holdVoice=self.voiceHoldButtonName,
+        #                                                     dropVoice=self.voiceDropButtonName,
+        #                                                     doubleVoice=self.voiceDoubleClickButtonName)
+        # self.voice_thread = Process(target=self.voiceThreadInstance.start)
+        #
+        # button = Button(
+        #     bg="#FFFFFF",
+        #     text=buttonText,
+        #     borderwidth=0,
+        #     highlightthickness=0,
+        #     command=lambda: [button.destroy(), self.voice_thread.kill(), self.voice_thread.join(), self.VoiceChangeButton(buttonPosition)],
+        #     relief="flat"
+        # )
+        # button.place(
+        #     x=755,
+        #     y=buttonPosition,
+        #     width=98,
+        #     height=28
+        # )
         self.voiceWindow.destroy()
         self.VoicePopUpPG()
 

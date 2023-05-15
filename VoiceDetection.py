@@ -2,8 +2,8 @@ import speech_recognition as sr
 import pyautogui
 import main
 from time import sleep
-
-
+import Metamotion as mm
+import MouseLock
 createListenObject = sr.Recognizer()
 
 # Ses kaydını başlatma ve birinci ve ikinci sesli komutları algılama
@@ -16,7 +16,7 @@ class VoiceDetection:
         self.commandHold = holdVoice
         self.commandDrop = dropVoice
         self.commandDouble = doubleVoice
-
+        self.MouseLock = False
 
     # def DetectCommandRight(self):
     #     try:
@@ -98,6 +98,10 @@ class VoiceDetection:
                 sleep(0.1)
                 pyautogui.doubleClick()
                 print("DoubleClick gerçekleştirildi")
+            elif command == "kilit":
+                print("kilitonurunkod")
+                MouseLock.MouseLockVoice()
+                print(MouseLock.voiceMouseLock)
             elif command == "programdan çık":
                 break
 

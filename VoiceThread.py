@@ -1,5 +1,5 @@
 import threading
-import Onuunkod as vd
+import VoiceDetection as vd
 
 
 

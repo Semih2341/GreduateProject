@@ -7,7 +7,7 @@ from scipy.signal import savgol_filter
 import numpy
 import pyautogui
 import math
-
+import MouseLock
 class Metamotion:
 
     METAMOTION_ADDRESS = "E7:DA:B1:97:93:7C"
@@ -29,6 +29,7 @@ class Metamotion:
         self.gyroCallback = FnVoid_VoidP_DataP(self.gyro_data_handler)
         self.screen_Width = pyautogui.size()[0]
         self.screen_Height = pyautogui.size()[1]
+        self.mouseLock = False
 
     def connect_device(self, adddress):
         self.metawear = MetaWear(adddress)
@@ -121,7 +122,10 @@ class Metamotion:
             self.currX, self.currY = pyautogui.position()
 
             if abs(xCoordinate - self.currX) > 0 or abs(yCoordinate - self.currY) > 0:
-                pyautogui.moveTo(xCoordinate, yCoordinate, duration=0.1)
+
+                if not MouseLock.voiceMouseLock:
+                    print(MouseLock.voiceMouseLock)
+                    pyautogui.moveTo(xCoordinate, yCoordinate, duration=0.1)
 
             self.x_cordinate_list.clear()
             self.y_cordinate_list.clear()

@@ -1,6 +1,6 @@
 import Metamotion as mm
 from time import sleep
-import Onuunkod as ok
+import VoiceDetection as ok
 import threading
 import Gestures
 import GestureThread as gt
@@ -19,22 +19,9 @@ def MouseLock():
 
 
 
-def Mouse():
-    while True:
-        MetaMotion = mm.Metamotion()
-        MetaMotion.configure_device()
-        MetaMotion.start_acc_gyro()
-        if stop_sound_thread:
-            print("MouseDurdu")
-            break
-
-
-
-    # sleep(10)
 
     # MetaMotion.disconnect_device()
 if __name__ == "__main__":
-
 
     # gestureThreadInstance = gt.GestureThread(lefClickGesture=Gestures.Gestures.LEFTBLINK,
     #                                          rightClickGesture=Gestures.Gestures.RIGHTBLINK,
@@ -75,7 +62,7 @@ if __name__ == "__main__":
     # newVoiceThread2.kill()
 
     GUI = gui.GUIPages()
-    GUI.GesturePopUpPG()
+    GUI.VoicePopUpPG()
     # voiceMenuThread = threading.Thread(target=GUI.VoicePopUpPG())
     # voiceMenuThread.start()
     # voiceMenuThread.join()
@@ -83,6 +70,10 @@ if __name__ == "__main__":
     # mouseThread.start()
     # soundThread.join()
     # mouseThread.join()
+    # MetaMotion = mm.Metamotion()
+    # MetaMotion.configure_device()
+    # MetaMotion.start_acc_gyro()
+    # sleep(30)
 
     # gestureThreadInstance.start()
 
