@@ -9,6 +9,7 @@ from pathlib import Path
 from multiprocessing import Process
 from multiprocess import process
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+import threading
 import VoiceDetection as VoicePart
 import GestureOperations as go
 import main as mainScript
@@ -16,13 +17,15 @@ import VoiceThread as vt
 import Gestures
 import GestureThread as gt
 import Metamotion as mm
-import pyautogui
+import pyautogui as pt
 from time import sleep
 import pickle
 
 
 class GUIPages:
     def __init__(self):
+        self.x = 0
+        self.y = 0
         self.voiceDropButtonName = "bırak"
         self.voiceHoldButtonName = "tut"
         self.voiceLeftButtonName = "domates"
@@ -35,6 +38,9 @@ class GUIPages:
         self.MetaMotion = mm.Metamotion()
         self.MetaMotion.configure_device()
         self.MetaMotion.start_acc_gyro()
+        self.screenX, self.screenY = pt.size()
+        self.cursorloc = threading.Thread(target=self.MouseCordinate)
+        self.cursorloc.start()
 
 
         # self.pickleGesture = pickle.dump(self.gestureThreadInstance.start())
@@ -42,6 +48,17 @@ class GUIPages:
     def MouseLockStatue(self,mmMouseLock,voiceMouseLock):
         while True:
             mmMouseLock = voiceMouseLock
+    def MouseCordinate(self):
+        sleep(5)
+        while True:
+            self.x, self.y = pt.position()
+            print('MouseLiveCordiantes x: {} y:{}'.format(self.x, self.y))
+            sleep(.5)
+            if self.x > (self.screenX*9)/10:
+                print("sağa bakma kapalı")
+                lambda : self.windowRight.destroy()
+
+                return
 
     def Divider(self, x):
         if x == 0:
@@ -621,13 +638,14 @@ class GUIPages:
 
     def MoveHeadToRightPG(self):
 
-        window = Tk()
 
-        window.geometry("1186x563")
-        window.configure(bg="#FFFFFF")
+        self.windowRight = Tk()
+
+        self.windowRight.geometry("1186x563")
+        self.windowRight.configure(bg="#FFFFFF")
 
         canvas = Canvas(
-            window,
+            self.windowRight,
             bg="#FFFFFF",
             height=563,
             width=1186,
@@ -637,25 +655,29 @@ class GUIPages:
         )
 
         canvas.place(x=0, y=0)
-        image_image_1 = PhotoImage(
+        image_image_11 = PhotoImage(
             file="assets/frame2.1/image_1.png")
         image_1 = canvas.create_image(
             593.0,
             313,
-            image=image_image_1
+            image=image_image_11
         )
-        window.resizable(False, False)
-        window.mainloop()
+
+
+
+        self.windowRight.resizable(False, False)
+        self.windowRight.mainloop()
 
     def MoveHeadToLeftPG(self):
 
-        window = Tk()
 
-        window.geometry("1186x563")
-        window.configure(bg="#FFFFFF")
+        self.windowLeft = Tk()
+
+        self.windowLeft.geometry("1186x563")
+        self.windowLeft.configure(bg="#FFFFFF")
 
         canvas = Canvas(
-            window,
+            self.windowLeft,
             bg="#FFFFFF",
             height=563,
             width=1186,
@@ -672,8 +694,9 @@ class GUIPages:
             313,
             image=image_image_1
         )
-        window.resizable(False, False)
-        window.mainloop()
+        self.windowLeft.resizable(False, False)
+        self.windowLeft.mainloop()
+
 
     def CloseRightEyePG(self):
 

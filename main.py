@@ -1,5 +1,4 @@
 import Metamotion as mm
-from time import sleep
 import VoiceDetection as ok
 import threading
 import Gestures
@@ -9,15 +8,11 @@ import multiprocessing as mp
 import gui
 counter = 0
 didSaidLock = False
-
 stop_sound_thread = False
 stop_mouse_thread = False
 
 def MouseLock():
     stop_mouse_thread !=stop_mouse_thread
-
-
-
 
 
     # MetaMotion.disconnect_device()
@@ -35,11 +30,11 @@ if __name__ == "__main__":
     # gui.CloseLeftEyePG()
     # GUI = gui.GUIPages()
     # GUI.GesturePopUpPG()
-    voiceDropButtonName = "bırak"
-    voiceHoldButtonName = "tut"
-    voiceLeftButtonName = "domates"
-    voiceRightButtonName = "salam"
-    voiceDoubleClickButtonName = "çift tıkla"
+    # voiceDropButtonName = "bırak"
+    # voiceHoldButtonName = "tut"
+    # voiceLeftButtonName = "domates"
+    # voiceRightButtonName = "salam"
+    # voiceDoubleClickButtonName = "çift tıkla"
 
     # VoiceThreadDenemeNew = ok.VoiceDetection(rightVoice=voiceRightButtonName,
     #                                               leftVoice=voiceLeftButtonName,
@@ -62,7 +57,8 @@ if __name__ == "__main__":
     # newVoiceThread2.kill()
 
     GUI = gui.GUIPages()
-    GUI.VoicePopUpPG()
+    # GUI.MoveHeadToRightPG()
+    GUI.GesturePopUpPG()
     # voiceMenuThread = threading.Thread(target=GUI.VoicePopUpPG())
     # voiceMenuThread.start()
     # voiceMenuThread.join()
