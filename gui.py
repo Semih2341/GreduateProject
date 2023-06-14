@@ -6,9 +6,10 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
+from pynput.mouse import Listener, Button, Controller
 from multiprocessing import Process
 from multiprocess import process
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Toplevel
 import threading
 import VoiceDetection as VoicePart
 import GestureOperations as go
@@ -24,6 +25,10 @@ import pickle
 
 class GUIPages:
     def __init__(self):
+        self.sagkapali = False
+        self.solkapali = False
+        self.listenerKapalı = False
+        self.mouseButtonClicked = ""
         self.x = 0
         self.y = 0
         self.voiceDropButtonName = "bırak"
@@ -35,30 +40,86 @@ class GUIPages:
         self.gestureHold = Gestures.Gestures.MOUTHOPEN
         self.gestureLeftClick = Gestures.Gestures.LEFTBLINK
         self.gestureRightClick = Gestures.Gestures.RIGHTBLINK
-        self.MetaMotion = mm.Metamotion()
-        self.MetaMotion.configure_device()
-        self.MetaMotion.start_acc_gyro()
+        # self.MetaMotion = mm.Metamotion()
+        # self.MetaMotion.configure_device()
+        # self.MetaMotion.start_acc_gyro()
         self.screenX, self.screenY = pt.size()
         self.cursorloc = threading.Thread(target=self.MouseCordinate)
+        self.open2ndmove = threading.Thread(target=self.MoveHeadToLeftPG)
+        self.open1stclick = threading.Thread(target=self.CloseRightEyePG)
+        self.open2ndclick = threading.Thread(target=self.CloseLeftEyePG)
+        self.openGesture = threading.Thread(target=self.GesturePopUpPG)
+        self.listenerThread = threading.Thread(target=self.listenerstarter)
         self.cursorloc.start()
+
 
 
         # self.pickleGesture = pickle.dump(self.gestureThreadInstance.start())
         # self.pickleLoadGesture = pickle.load(self.pickleGesture)
+
+    mouse = Controller()
+
+    def on_click(self, x, y, button, pressed):
+        if pressed:
+            self.mouseButtonClicked = str(button)
+            print("ökgjögjökhjö")
+            if self.mouseButtonClicked == "Button.right" and not self.sagkapali:
+                print("sağgözkapalı")
+                pt.keyDown('alt')
+                pt.keyDown('f4')
+                sleep(.5)
+                pt.keyUp('f4')
+                pt.keyUp('alt')
+                self.sagkapali = True
+                self.open2ndclick.start()
+            elif self.mouseButtonClicked == "Button.left" and not self.solkapali:
+                pt.keyDown('alt')
+                pt.keyDown('f4')
+                sleep(.5)
+                pt.keyUp('f4')
+                pt.keyUp('alt')
+                self.solkapali = True
+                self.gestureThreadInstance.stop()
+                self.openGesture.start()
+
+
+    def listenerstarter(self):
+        with Listener(on_click=self.on_click) as listener:
+            # Listener sürekli çalışsın
+            listener.join()
+
     def MouseLockStatue(self,mmMouseLock,voiceMouseLock):
         while True:
             mmMouseLock = voiceMouseLock
+
+
     def MouseCordinate(self):
-        sleep(5)
+        sleep(1)
         while True:
             self.x, self.y = pt.position()
             print('MouseLiveCordiantes x: {} y:{}'.format(self.x, self.y))
             sleep(.5)
             if self.x > (self.screenX*9)/10:
                 print("sağa bakma kapalı")
-                lambda : self.windowRight.destroy()
+                pt.keyDown('alt')
+                pt.keyDown('f4')
+                sleep(.5)
+                pt.keyUp('f4')
+                pt.keyUp('alt')
+                self.open2ndmove.start()
+                self.sagkapali = True
+            elif self.x < self.screenX / 10 and self.sagkapali:
+                    print("sağa bakma kapalı")
+                    pt.keyDown('alt')
+                    pt.keyDown('f4')
+                    sleep(.1)
+                    pt.keyUp('f4')
+                    pt.keyUp('alt')
+                    self.open1stclick.start()
+                    self.listenerThread.start()
+                    return
 
-                return
+
 
     def Divider(self, x):
         if x == 0:
@@ -663,8 +724,6 @@ class GUIPages:
             image=image_image_11
         )
 
-
-
         self.windowRight.resizable(False, False)
         self.windowRight.mainloop()
 
@@ -687,26 +746,31 @@ class GUIPages:
         )
 
         canvas.place(x=0, y=0)
-        image_image_1 = PhotoImage(
-            file="assets/frame2.2/image_1.png")
+        image_image_11 = PhotoImage(
+            file="assets/frame2.2/imageLeft.png")
         image_1 = canvas.create_image(
             593.0,
             313,
-            image=image_image_1
+            image=image_image_11
         )
+
         self.windowLeft.resizable(False, False)
         self.windowLeft.mainloop()
 
 
     def CloseRightEyePG(self):
+        self.gestureThreadInstance = gt.GestureThread(lefClickGesture=self.gestureLeftClick,
+                                                      rightClickGesture=self.gestureRightClick,
+                                                      dragGesture=self.gestureHold,
+                                                      doubleClickGesture=self.gestureDoubleClick)
+        self.gestureThreadInstance.start()
+        self.RightEyeWindow = Tk()
 
-        window = Tk()
-
-        window.geometry("1186x563")
-        window.configure(bg="#FFFFFF")
+        self.RightEyeWindow.geometry("1186x563")
+        self.RightEyeWindow.configure(bg="#FFFFFF")
 
         canvas = Canvas(
-            window,
+            self.RightEyeWindow,
             bg="#FFFFFF",
             height=563,
             width=1186,
@@ -731,8 +795,8 @@ class GUIPages:
             398.99999999999994,
             image=image_image_2
         )
-        window.resizable(False, False)
-        window.mainloop()
+        self.RightEyeWindow.resizable(False, False)
+        self.RightEyeWindow.mainloop()
 
     def CloseLeftEyePG(self):
 

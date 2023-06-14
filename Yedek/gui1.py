@@ -36,7 +36,7 @@ canvas = Canvas(
 
 canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(
-    file=relative_to_assets("image_1.png"))
+    file=relative_to_assets("imageLeft.png"))
 image_1 = canvas.create_image(
     593.0,
     281.0,

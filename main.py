@@ -5,6 +5,7 @@ import Gestures
 import GestureThread as gt
 import VoiceThread as vt
 import multiprocessing as mp
+from time import sleep
 import gui
 counter = 0
 didSaidLock = False
@@ -58,7 +59,7 @@ if __name__ == "__main__":
 
     GUI = gui.GUIPages()
     # GUI.MoveHeadToRightPG()
-    GUI.GesturePopUpPG()
+    GUI.MoveHeadToRightPG()
     # voiceMenuThread = threading.Thread(target=GUI.VoicePopUpPG())
     # voiceMenuThread.start()
     # voiceMenuThread.join()

@@ -121,11 +121,14 @@ class Metamotion:
             print('x: {} y: {}'.format(xCoordinate, yCoordinate))
             self.currX, self.currY = pyautogui.position()
 
-            if abs(xCoordinate - self.currX) > 0 or abs(yCoordinate - self.currY) > 0:
+
+            if abs(xCoordinate - self.currX) > 10 or abs(yCoordinate - self.currY) > 10:
 
                 if not MouseLock.voiceMouseLock:
                     print(MouseLock.voiceMouseLock)
                     pyautogui.moveTo(xCoordinate, yCoordinate, duration=0.1)
+                    self.xOldCoordinate = xCoordinate
+                    self.yOldCoordinate = yCoordinate
 
             self.x_cordinate_list.clear()
             self.y_cordinate_list.clear()
