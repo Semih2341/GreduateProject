@@ -109,8 +109,8 @@ class Metamotion:
             self.y_list = list(savgol_filter(self.y_list, 30, 1))
 
             for i in self.x_list:
-                self.x_cordinate_list.append(int(numpy.interp(self.x_list[int(i)], [-0.70, 0.70], [0, self.screen_Width])))
-                self.y_cordinate_list.append(int(numpy.interp(self.y_list[int(i)], [-0.70, 0.70], [0, self.screen_Height])))
+                self.x_cordinate_list.append(int(numpy.interp(self.x_list[int(i)], [-0.50, 0.50], [0, self.screen_Width])))
+                self.y_cordinate_list.append(int(numpy.interp(self.y_list[int(i)], [-0.50, 0.50], [0, self.screen_Height])))
             self.x_cordinate_list = list(savgol_filter(self.x_cordinate_list, 30, 1))
             self.y_cordinate_list = list(savgol_filter(self.y_cordinate_list, 30, 1))
 
@@ -122,7 +122,7 @@ class Metamotion:
             self.currX, self.currY = pyautogui.position()
 
 
-            if abs(xCoordinate - self.currX) > 10 or abs(yCoordinate - self.currY) > 10:
+            if abs(xCoordinate - self.currX) > 18 or abs(yCoordinate - self.currY) > 18:
 
                 if not MouseLock.voiceMouseLock:
                     print(MouseLock.voiceMouseLock)

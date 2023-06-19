@@ -50,7 +50,6 @@ class GUIPages:
         self.open2ndclick = threading.Thread(target=self.CloseLeftEyePG)
         self.openGesture = threading.Thread(target=self.GesturePopUpPG)
         self.listenerThread = threading.Thread(target=self.listenerstarter)
-        self.cursorloc.start()
 
 
 
@@ -99,7 +98,7 @@ class GUIPages:
             self.x, self.y = pt.position()
             print('MouseLiveCordiantes x: {} y:{}'.format(self.x, self.y))
             sleep(.5)
-            if self.x > (self.screenX*9)/10:
+            if self.x > (self.screenX*9)/10 and not self.sagkapali:
                 print("sağa bakma kapalı")
                 pt.keyDown('alt')
                 pt.keyDown('f4')
@@ -699,6 +698,7 @@ class GUIPages:
 
     def MoveHeadToRightPG(self):
 
+        self.cursorloc.start()
 
         self.windowRight = Tk()
 
