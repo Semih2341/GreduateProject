@@ -40,9 +40,9 @@ class GUIPages:
         self.gestureHold = Gestures.Gestures.MOUTHOPEN
         self.gestureLeftClick = Gestures.Gestures.LEFTBLINK
         self.gestureRightClick = Gestures.Gestures.RIGHTBLINK
-        # self.MetaMotion = mm.Metamotion()
-        # self.MetaMotion.configure_device()
-        # self.MetaMotion.start_acc_gyro()
+        self.MetaMotion = mm.Metamotion()
+        self.MetaMotion.configure_device()
+        self.MetaMotion.start_acc_gyro()
         self.screenX, self.screenY = pt.size()
         self.cursorloc = threading.Thread(target=self.MouseCordinate)
         self.open2ndmove = threading.Thread(target=self.MoveHeadToLeftPG)

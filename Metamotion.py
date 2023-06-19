@@ -100,7 +100,7 @@ class Metamotion:
 
     def gyro_data_handler(self, ctx, data):
         # print("GYRO X: {} Y: {}".format(self.BULL_SHIT(data)[0], self.BULL_SHIT(data)[1]))
-        gyrodata = self.BULL_SHIT(data)
+        gyrodata = self.DATA_PARSER(data)
         self.x_list.append(gyrodata[0])
         self.y_list.append(gyrodata[1])
 
@@ -138,7 +138,7 @@ class Metamotion:
         # self.counter = self.counter+1
         # print(self.counter)
 
-    def BULL_SHIT(self,data):
+    def DATA_PARSER(self, data):
         xAxis = float(str(parse_value(data)).split(" ")[2].replace(",", ""))
         yAxis = float(str(parse_value(data)).split(" ")[5].replace(",", ""))
         return xAxis, yAxis
